@@ -1,38 +1,41 @@
 # Embedded Quantum Control Platform
 
-💡 **What is this?**
+## Project Overview
+This project is a modular, real-time embedded control and signal processing platform built on an Arduino UNO R3. It maps fundamental quantum control concepts—such as state preparation, pulse sequences, and measurement decoherence—onto a deterministic embedded architecture. The system utilizes a multi-sensor array to estimate system state and applies closed-loop PID control to drive physical actuators.
 
-This project is a step up from basic hardware sketches. It is a **modular, real-time embedded control and signal processing platform** built around an Arduino UNO R3. 
+## System Architecture
+The firmware is structured into distinct functional layers to ensure modularity and real-time performance:
 
-The goal isn't to build a pretend quantum computer, but to map real "quantum control" concepts (like state preparation, pulse sequences, and decoherence) onto standard embedded systems architecture (like finite state machines, PWM control, and PID feedback loops). It ingests multiple sensor inputs, processes them into a unified system state, applies control logic, and drives physical actuators while exporting live telemetry.
+1.  **Measurement Layer (Sensors):** High-frequency polling of an environmental sensor suite (Ultrasonic, LDR, DHT11, Thermistor) to acquire raw "qubit" state data.
+2.  **State Estimation & FSM:** A non-blocking, event-driven Finite State Machine (FSM) that processes sensor data into a unified system state vector.
+3.  **Control Core (PID):** A feedback stabilization loop that computes corrective control effort based on the delta between measured state and target setpoints.
+4.  **Signal Generation (Actuation):** Precise timing sequences and PWM pulse trains drive servos, stepper motors, and visual indicators to stabilize the system against injected noise.
+5.  **Telemetry Readout:** Real-time data visualization via LCD1602, 7-segment displays (multiplexed via 74HC595), and a Python-based serial telemetry bridge.
 
-🛠️ **How it works**
+## Hardware Components
+*   **Microcontroller:** Arduino UNO R3 (ATmega328P)
+*   **Measurement Suite:** HC-SR04 Ultrasonic, DHT11, Photoresistors, NTC Thermistor
+*   **Control Actuators:** SG90 Servo, 28BYJ-48 Stepper Motor (ULN2003), Active/Passive Buzzers, 5V Relay
+*   **HMI & Input:** Analog Joystick, IR Receiver, Potentiometer, Tactical Buttons
+*   **Logic Expansion:** 74HC595 Shift Register (8-bit serial-to-parallel)
 
-*   **The Sensors (Measurement):** Photoresistors, a thermistor, DHT11, and an ultrasonic sensor act as our measurement channels, picking up environmental data and injecting "noise" (disturbances).
-*   **The Brain (State Estimation & FSM):** A non-blocking, event-driven Finite State Machine (FSM) takes user inputs and sensor data, compares it to a target state, and calculates the necessary control effort.
-*   **The Actuators (Control Output):** Servos, stepper motors, LEDs, and buzzers fire off precise timing patterns (PWM pulse sequences) to actively correct the system state and visually demonstrate the control loops in action.
-*   **The Telemetry (Readout):** An LCD1602, 7-segment displays (driven by a 74HC595 shift register), and a live Python serial bridge show exactly what the system is doing, tracking target vs. actual values in real-time.
+## Technologies Used
+*   **C++ / PlatformIO:** Modular firmware architecture with strict header/source separation and hardware abstraction.
+*   **Embedded Control Logic:** PID feedback loops, Finite State Machines (FSM), and non-blocking task scheduling.
+*   **Python:** Host-side serial data interception and live time-series plotting (`pyserial`, `matplotlib`).
+*   **Version Control:** Professional Git workflow utilizing **Conventional Commits** for structured history.
 
-🧱 **Parts List**
+## Technical Objectives
+*   **State Preparation:** Initialising the system into a stable, known configuration via calibrated sensor baselines.
+*   **Disturbance Rejection:** Implementing closed-loop control to maintain system fidelity despite environmental noise (decoherence).
+*   **Hardware Scaling:** Utilizing shift registers to overcome MCU pin limitations for complex multi-output multiplexing.
+*   **Telemetry Pipeline:** Establishing a high-baud UART bridge (115200 bps) for real-time system analysis on macOS.
 
-*   **Core:** Arduino UNO R3
-*   **Inputs:** Ultrasonic Sensor, DHT11 (Temp/Humidity), Joystick, IR Receiver, Potentiometer, Tilt Switch, Buttons, Photoresistors, Thermistor.
-*   **Outputs:** Servo Motor (SG90), Stepper Motor + ULN2003 Driver, Active/Passive Buzzers, LEDs (RGB, Yellow, Blue, Green, Red), LCD1602, 1-digit & 4-digit 7-segment displays.
-*   **Electronics:** 74HC595 Shift Register, 5V Relay, PN2222 Transistors, 1N4007 Diodes, Resistors, Breadboard.
-
-💻 **Tech Stack**
-
-*   **C++ / PlatformIO:** For a modular, multi-file embedded architecture (separating headers and source files).
-*   **Python:** For the host-side serial data bridge and plotting the response curves (Matplotlib).
-*   **Git / GitHub:** Version control using the Conventional Commits specification.
-
-🚀 **Development Phases**
-
-This project is being built in structured engineering milestones:
-1.  **Phase 1:** Hardware Bring-Up and Baseline Drivers
-2.  **Phase 2:** Modular Driver Layer (Hardware Abstraction)
-3.  **Phase 3:** State Machine and System Orchestration
-4.  **Phase 4:** Feedback Control Core (PID Implementation)
-5.  **Phase 5:** Signal Generation and Disturbance Injection
-6.  **Phase 6:** Multi-Sensor Fusion and Shift-Register Integration
-7.  **Phase 7:** Python Data Logging and System Validation
+## Development Roadmap
+*   **Milestone 1:** Hardware Bring-Up & Baseline Driver Validation (Current)
+*   **Milestone 2:** Modular Driver Layer & Hardware Abstraction
+*   **Milestone 3:** State Machine Orchestration
+*   **Milestone 4:** Feedback Control Core (PID Implementation)
+*   **Milestone 5:** Signal Generation & Disturbance Injection
+*   **Milestone 6:** Multi-Sensor Fusion & Shift-Register Expansion
+*   **Milestone 7:** Final System Validation & Python Data Logging
