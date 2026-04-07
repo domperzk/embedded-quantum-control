@@ -1,35 +1,43 @@
-# Modular Embedded Control Platform (Arduino UNO)
+# Modular Embedded Control Platform (ATmega328P)
 
-This is a real-time embedded control and signal processing platform built on an Arduino UNO R3. 
+This project is a modular real-time embedded control platform built on the ATmega328P microcontroller.
 
-Most Arduino projects are single-file scripts. The goal of this project is to build a proper embedded software architecture using a Hardware Abstraction Layer (HAL), a Finite State Machine (FSM), and a closed-loop control system. It maps "quantum-inspired" control concepts (measurement, state estimation, disturbance injection, and feedback correction) onto physical hardware.
+Most small embedded projects are written as single-file scripts. The goal here is to build a structured embedded system with clear architecture, including a Hardware Abstraction Layer (HAL), a Finite State Machine (FSM), and a closed-loop control system.
 
-## The Hardware Challenge & Pin Multiplexing
-The UNO only has 12 usable digital/analog pins for this project (reserving TX/RX). The system requires 15 pins for all sensors, displays, and motors. 
+The system maps control concepts such as measurement, state estimation, disturbance handling, and feedback correction onto physical hardware.
 
-To solve this hardware constraint, the architecture uses a **74HC595 Shift Register** as a serial bottleneck. The 4-pin Stepper Motor and status LEDs are driven through the shift register using bit-masking and shadow registers, freeing up enough pins to run the LCD1602 and the analog sensor suite natively.
+## Hardware Constraints & Pin Multiplexing
 
-## Hardware Inventory
-**Sensors (Measurement Layer):**
-* Ultrasonic Sensor (Distance / Spatial disturbance)
-* DHT11 & Thermistor (Thermal disturbance)
-* 2x Photoresistors (Optical state)
-* Potentiometer (Manual target setpoint)
+The ATmega328P has limited I/O, so careful pin management is required.  
+The system requires more pins than are directly available for sensors, displays, and actuators.
 
-**Actuators (Control Effort & Readout):**
-* SG90 Servo (Proportional control output)
-* Stepper Motor + ULN2003 (Discrete state changes, driven via 74HC595)
-* LCD1602 (Primary telemetry)
-* LEDs & Active Buzzer (Fault / Mode indicators)
+To address this, the architecture uses a **74HC595 shift register** to extend output capability.  
+The stepper motor and status LEDs are driven through the shift register using bit masking, freeing up pins for sensors and display modules.
+
+## Hardware Overview
+
+### Sensors (Measurement Layer)
+- Ultrasonic sensor (distance / disturbance input)
+- DHT11 and thermistor (temperature sensing)
+- Photoresistors (light sensing)
+- Potentiometer (manual input / setpoint)
+
+### Actuators (Control & Output)
+- SG90 servo (proportional control output)
+- Stepper motor + ULN2003 (discrete control via shift register)
+- LCD1602 (system telemetry)
+- LEDs and buzzer (status and fault indication)
 
 ## Development Roadmap
-- [x] **Milestone 1:** Hardware Bring-Up & Shift Register Validation
-- [x] **Milestone 2:** Modular Driver Layer (C++ Headers/Classes)
-- [ ] **Milestone 3:** System Orchestration (Finite State Machine)
-- [ ] **Milestone 4:** Feedback Control Core (PID/PI loop)
-- [ ] **Milestone 5:** Signal Generation & Disturbance Testing
-- [ ] **Milestone 6:** Sensor Fusion
-- [ ] **Milestone 7:** Python Telemetry Logging & Final Integration
+
+- [x] **Milestone 1:** Hardware bring-up and shift register validation  
+- [x] **Milestone 2:** Modular driver layer (HAL)  
+- [ ] **Milestone 3:** System orchestration (Finite State Machine)  
+- [ ] **Milestone 4:** Feedback control (P / PI / PID)  
+- [ ] **Milestone 5:** Disturbance testing and signal patterns  
+- [ ] **Milestone 6:** Multi-sensor integration  
+- [ ] **Milestone 7:** Python telemetry logging and final integration  
 
 ## Setup
+
 Built using VS Code and PlatformIO.
