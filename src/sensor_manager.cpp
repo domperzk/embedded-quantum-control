@@ -1,18 +1,39 @@
 #include <Arduino.h>
 #include "sensor_manager.h"
+#include "config.h"
+
+SensorData cachedState;
 
 void initSensors() {
-    // We will set up pin modes here later if needed
-    Serial.println("Sensors initialized.");
+    pinMode(PIN_US_TRIG, OUTPUT);
+    pinMode(PIN_US_ECHO, INPUT);
+    pinMode(PIN_LDR, INPUT);
 }
 
-int readLightLevel() {
-    int photoresistor1 = analogRead(A2);
 
-    return photoresistor1;
+void updateSensors() {
+    unsigned long currentMillis = millis();
+    static unsigned long previousPollTime = 0;
+    if (currentMillis - previousPollTime >= TIMING_SENSOR_POLL_MS) {
+        previousPollTime = currentMillis;
+   
+        cachedState.lightLevel = analogRead(PIN_LDR);
+        // will add temp + humidity when ready
+        digitalWrite(PIN_US_TRIG, LOW);
+        delayMicroseconds(2);
+        digitalWrite(PIN_US_TRIG, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(PIN_US_TRIG, LOW);
+
+        unsigned long duration = pulseIn(PIN_US_ECHO, HIGH, 23200);
+        cachedState.distanceCm = duration/58;
+    }
+
+
+
+} 
+
+SensorData getSensorState() {
+    return cachedState;
 }
 
-float readTemperature() {
-    // We will leave this blank for now until the LDR works
-    return 0.0;
-}
